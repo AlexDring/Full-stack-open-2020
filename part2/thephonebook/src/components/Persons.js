@@ -1,14 +1,14 @@
 import React from "react";
 import Person from "./Person";
 
-const Persons = ({ filtered, filteredContacts, persons }) => {
-  if (filtered) {
+const Persons = ({ showAll, filteredContacts, persons, deleteClick }) => {
+  if (showAll) {
     return persons.map((person) => (
-      <Person key={person.name} person={person} />
+      <Person key={person.id} person={person} deleteClick={deleteClick} />
     ));
   } else {
     return filteredContacts.map((person) => (
-      <Person key={person.name} person={person} />
+      <Person key={person.id} person={person} deleteClick={deleteClick} />
     ));
   }
 };

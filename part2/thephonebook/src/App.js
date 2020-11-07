@@ -1,33 +1,58 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Filter from "./components/Filter";
 import PersonsForm from "./components/PersonsForm";
 import Persons from "./components/Persons";
+import contactsService from "./components/services/contacts";
+import './index.css'
+
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: "Arto Hellas", number: "040-123456" },
-    { name: "Ada Lovelace", number: "39-44-5323523" },
-    { name: "Dan Abramov", number: "12-43-234345" },
-    { name: "Mary Poppendieck", number: "39-23-6423122" },
-  ]);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filteredContacts, setFilteredContacts] = useState([]);
-  const [showFiltered, setShowFiltered] = useState(true);
+  const [showAll, setShowAll] = useState(true);
+
+  useEffect(() => {
+    contactsService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
+      })
+    }, [])
 
   const addName = (event) => {
     event.preventDefault();
-    if (persons.some((person) => person.name === newName)) {
-      window.alert(`${newName} is already added to phonebook`);
-    } else {
-      const nameObject = {
-        name: newName,
-        number: newNumber,
-      };
-      setPersons(persons.concat(nameObject));
-      setNewName("");
-      setNewNumber("");
+    
+    const nameObject = {
+      name: newName,
+      number: newNumber,
     }
+
+    const contactExists = persons.find((person) => person.name.toLowerCase() === newName.toLowerCase())
+    if(contactExists) {
+      if(window.confirm(`${contactExists.name} is already in your phonebook! Do you want to update their existing phone number - ${contactExists.number}?`)) {
+        contactsService
+          .update(contactExists.id, nameObject)
+          .then(updatedContact =>
+            setPersons(persons.map(person => 
+              person.name.toLowerCase() !== updatedContact.name.toLowerCase() 
+              ? person : updatedContact))
+            )
+      } else {
+        window.alert(`${contactExists.name} hasn't been added or updated.`)
+      } 
+    } 
+    
+    else {
+      contactsService
+        .create(nameObject)
+        .then(newPerson => {
+          setPersons(persons.concat(newPerson))
+      })
+    }
+    setNewName("");
+    setNewNumber("");
   };
 
   const handleFilterChange = (e) => {
@@ -37,9 +62,17 @@ const App = () => {
         person.name.toLowerCase().indexOf(filterQuery.toLowerCase()) !== -1
       );
     });
-    setShowFiltered(persons.length === filtered.length);
+    setShowAll(persons.length === filtered.length);
     setFilteredContacts(filtered);
   };
+
+  const deleteClick = (id, person) => {
+    if (window.confirm(`Delete ${person}?`)) {
+      contactsService
+      .deleteContact(id)
+      setPersons(persons.filter(person => person.id !== id))
+    }
+  }
 
   return (
     <div>
@@ -47,7 +80,7 @@ const App = () => {
       <Filter changeHandler={handleFilterChange} />
       <h3>Add new</h3>
       <PersonsForm
-        submit={addName}
+        submitHandler={addName}
         nameValue={newName}
         nameChange={(e) => setNewName(e.target.value)}
         numberValue={newNumber}
@@ -55,9 +88,10 @@ const App = () => {
       />
       <h3>Numbers</h3>
       <Persons
-        filtered={showFiltered}
+        showAll={showAll}
         filteredContacts={filteredContacts}
         persons={persons}
+        deleteClick={deleteClick}
       />
     </div>
   );

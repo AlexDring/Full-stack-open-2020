@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Filter from "./components/Filter";
 import PersonsForm from "./components/PersonsForm";
 import Persons from "./components/Persons";
+import Notification from './components/Notification'
 import contactsService from "./components/services/contacts";
 import './index.css'
 
@@ -12,6 +13,8 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
   const [filteredContacts, setFilteredContacts] = useState([]);
   const [showAll, setShowAll] = useState(true);
+  const [message, setMessage] = useState(null)
+  const [messageType, setMessageType] = useState('')
 
   useEffect(() => {
     contactsService
@@ -31,7 +34,7 @@ const App = () => {
 
     const contactExists = persons.find((person) => person.name.toLowerCase() === newName.toLowerCase())
     if(contactExists) {
-      if(window.confirm(`${contactExists.name} is already in your phonebook! Do you want to update their existing phone number - ${contactExists.number}?`)) {
+      if(window.confirm(`${contactExists.name} is already in your phonebook! Do you want to replace their existing phone number - ${contactExists.number}?`)) {
         contactsService
           .update(contactExists.id, nameObject)
           .then(updatedContact =>
@@ -39,17 +42,39 @@ const App = () => {
               person.name.toLowerCase() !== updatedContact.name.toLowerCase() 
               ? person : updatedContact))
             )
+          .then(success => {
+            setMessage(`${contactExists.name} was updated!`)
+            setMessageType('success')
+            setTimeout(() => {
+              setMessage(null)
+            }, 5000)
+          }
+          )
+          .catch(error => { 
+            setMessage(`Contact information for ${contactExists.name} has already been removed from the server.`)
+            setMessageType('error')
+            setPersons(persons.filter(person => person.id !== contactExists.id))
+            setTimeout(() => {
+              setMessage(null)
+            }, 5000)
+          })
       } else {
         window.alert(`${contactExists.name} hasn't been added or updated.`)
       } 
     } 
-    
     else {
       contactsService
         .create(nameObject)
         .then(newPerson => {
           setPersons(persons.concat(newPerson))
-      })
+        })
+        .then(success => {
+          setMessage(`${nameObject.name} was added!`)
+          setMessageType('success')
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+        })
     }
     setNewName("");
     setNewNumber("");
@@ -77,6 +102,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} type={messageType} />
       <Filter changeHandler={handleFilterChange} />
       <h3>Add new</h3>
       <PersonsForm

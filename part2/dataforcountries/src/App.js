@@ -8,15 +8,12 @@ const App = () => {
   const [filterValue, setFilterValue] = useState('')
 
   useEffect(() => {
-    console.log('effect')
     axios
       .get('https://restcountries.eu/rest/v2/all')
       .then(response => {
-        console.log('promise fulfilled')
         setCountries(response.data)
       })
   }, [])
-  console.log('render', countries.length, 'persons')
 
   const filterHandler = (e) => {
     const filterQuery = e.target.value;
@@ -28,6 +25,11 @@ const App = () => {
     });
     setCountriesFilter(filtered);
   }
+
+  function handleShowClick(country) {
+    setFilterValue(country.name);
+    setCountriesFilter([country]);
+  }
   
   return (
     <>
@@ -35,7 +37,11 @@ const App = () => {
         find countries <input value={filterValue} onChange={filterHandler} />
       </div>
       <div>
-        <FilterDisplay filtered={countriesFilter} setFilterValue={setFilterValue} setCountriesFilter={setCountriesFilter} countries={countries} />
+        <FilterDisplay 
+        filtered={countriesFilter} 
+        countries={countries} 
+        handleShowClick={handleShowClick}
+        />
       </div>
     </>
   )

@@ -2,13 +2,7 @@ import React from 'react'
 import CountryInfo from './CountryInfo'
 import CountryWeather from './CountryWeather'
 
-const FilterDisplay = (props) => {
-  const { filtered, setFilterValue, setCountriesFilter } = props
-
-  function handleShowClick(country) {
-    setFilterValue(country.name);
-    setCountriesFilter([country]);
-  }
+const FilterDisplay = ({ filtered, handleShowClick }) => {
 
   if (filtered.length > 10) {
     return(

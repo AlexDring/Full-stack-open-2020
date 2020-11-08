@@ -5,18 +5,15 @@ const CountryWeather = ({capital}) => {
   const [capitalWeather, setCapitalWeather] = useState()
 
   useEffect(() => {
-    const api_key = process.env.REACT_APP_API_KEY
-    console.log('weather effect')
     axios
-      .get(`http://api.weatherstack.com/current?access_key=${api_key}&query=${capital}`)
+      .get(`http://api.weatherstack.com/current?access_key=${process.env.REACT_APP_API_KEY}&query=${capital}`)
       .then(response => { 
-        console.log('weather promise fulfilled')
         setCapitalWeather(response.data) 
       })
   }, [capital])
-  console.log('weather render')
   
   if(capitalWeather) {
+
     return(
       <div>
         <h2>Weather in {capital} - {capitalWeather.current.weather_descriptions}!</h2>
@@ -27,7 +24,10 @@ const CountryWeather = ({capital}) => {
     )   
   }
   return(
-    <p>Loading weather...</p>
+    <div>
+      <h2>Weather in {capital}</h2>
+      <p>Loading weather...</p>
+    </div>
   )
 }
 

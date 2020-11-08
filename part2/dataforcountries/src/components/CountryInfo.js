@@ -1,8 +1,10 @@
 import React from 'react'
 
-const CountryInfo = (props) => {
-  const {country} = props
-  console.log(country);
+const CountryInfo = ({ country }) => {
+  const countryStyles = {
+    maxWidth: 250
+  }
+
   return(
   <div>
     <h1>{country.name}</h1>
@@ -14,7 +16,7 @@ const CountryInfo = (props) => {
           return <li key={language.name}>{language.name}</li>
       })}
     </ul>
-    <img src={country.flag} alt={country.name + ' flag'} ></img>
+    <img style={countryStyles} src={country.flag} alt={country.name + ' flag'} ></img>
   </div>
   )
 }

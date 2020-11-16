@@ -4,7 +4,6 @@ import PersonsForm from "./components/PersonsForm";
 import Persons from "./components/Persons";
 import Notification from './components/Notification'
 import contactsService from "./components/services/contacts";
-import './index.css'
 
 
 const App = () => {
@@ -32,50 +31,59 @@ const App = () => {
       number: newNumber,
     }
 
-    const contactExists = persons.find((person) => person.name.toLowerCase() === newName.toLowerCase())
-    if(contactExists) {
-      if(window.confirm(`${contactExists.name} is already in your phonebook! Do you want to replace their existing phone number - ${contactExists.number}?`)) {
-        contactsService
-          .update(contactExists.id, nameObject)
-          .then(updatedContact =>
-            setPersons(persons.map(person => 
-              person.name.toLowerCase() !== updatedContact.name.toLowerCase() 
-              ? person : updatedContact))
-            )
-          .then(success => {
-            setMessage(`${contactExists.name} was updated!`)
-            setMessageType('success')
-            setTimeout(() => {
-              setMessage(null)
-            }, 5000)
-          }
-          )
-          .catch(error => { 
-            setMessage(`Contact information for ${contactExists.name} has already been removed from the server.`)
-            setMessageType('error')
-            setPersons(persons.filter(person => person.id !== contactExists.id))
-            setTimeout(() => {
-              setMessage(null)
-            }, 5000)
-          })
-      } else {
-        window.alert(`${contactExists.name} hasn't been added or updated.`)
-      } 
-    } 
-    else {
+    // const contactExists = persons.find((person) => person.name.toLowerCase() === newName.toLowerCase())
+    // if(contactExists) {
+    //   if(window.confirm(`${contactExists.name} is already in your phonebook! Do you want to replace their existing phone number - ${contactExists.number}?`)) {
+    //     console.log(nameObject, typeof nameObject);
+    //     contactsService
+    //       .update(contactExists.id, nameObject)
+    //       .then(updatedContact =>
+    //         setPersons(persons.map(person => 
+    //           person.name.toLowerCase() !== updatedContact.name.toLowerCase() 
+    //           ? person : updatedContact))
+    //         )
+    //       .then(success => {
+    //         setMessage(`${contactExists.name} was updated!`)
+    //         setMessageType('success')
+    //         setTimeout(() => {
+    //           setMessage(null)
+    //         }, 5000)
+    //       }
+    //       )
+    //       .catch(error => { 
+    //         setMessage(`Contact information for ${contactExists.name} has already been removed from the server.`)
+    //         setMessageType('error')
+    //         setPersons(persons.filter(person => person.id !== contactExists.id))
+    //         setTimeout(() => {
+    //           setMessage(null)
+    //         }, 5000)
+    //       })
+    //   } else {
+    //     window.alert(`${contactExists.name} hasn't been added or updated.`)
+    //   } 
+    // } 
+    // else {
       contactsService
         .create(nameObject)
         .then(newPerson => {
           setPersons(persons.concat(newPerson))
-        })
-        .then(success => {
           setMessage(`${nameObject.name} was added!`)
           setMessageType('success')
           setTimeout(() => {
             setMessage(null)
           }, 5000)
         })
-    }
+        .catch(error => {
+          console.log('ting', error)
+          // this is the way to access the error message
+          setMessage(error.response.data.error)
+          setMessageType('error')
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+          console.log(error.response.data)
+        })
+    // }
     setNewName("");
     setNewNumber("");
   };

@@ -1,7 +1,7 @@
-// var _ = require('lodash')
+var _ = require('lodash')
 
 // eslint-disable-next-line no-unused-vars
-const dummy = (blogs) => {
+const dummy = () => {
   return 1
 }
 const totalLikes = (blogs) => {
@@ -21,13 +21,42 @@ const favouriteBlog = (blogs) => {
   return(highest)
 }
 
-// const mostBlogs = (blogs) => {
-//   const countBlogs = _.countBy(blogs, function(blog) {
-//     return blog.author
-//   })
-//   console.log(countBlogs)
-// }
+const mostBlogs = (blogs) => {
+  const countBlogs = _
+    .chain(blogs)
+    .countBy('author')
+    .toPairs()
+    .maxBy()
+    .value()
+
+  return {
+    author: countBlogs[0],
+    blogs: countBlogs[1]
+  }
+}
+
+const mostLikes = (blogs) => {
+  const groupedBlogs = _.groupBy(blogs, 'author')
+  let newArray = []
+
+  for (const name in groupedBlogs) {
+    let likesTotals = {
+      author: name,
+      likes: groupedBlogs[name].reduce((a,c) => {
+        return a + c.likes
+      },0)
+    }
+
+    newArray.push(likesTotals)
+  }
+
+  return _.maxBy(newArray, function(o) { return o.likes })
+}
 
 module.exports = {
-  dummy, totalLikes, favouriteBlog
+  dummy,
+  totalLikes,
+  favouriteBlog,
+  mostBlogs,
+  mostLikes
 }

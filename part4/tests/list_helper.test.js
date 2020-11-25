@@ -59,6 +59,7 @@ const blogs = [
 ]
 
 describe('total likes', () => {
+
   const listWithOneBlog = [
     {
       _id: '5a422aa71b54a676234d17f8',
@@ -81,13 +82,24 @@ describe('total likes', () => {
   })
 })
 
-// describe('favourite blogs', () => {
-//   test('return favourite blog post', () => {
-//     const result = listHelper.favouriteBlog(blogs)
-//     expect(result).toEqual(blogs[2])
-//   })
-//   // test('favourite blog post author', () => {
-//   //   const result = listHelper.mostBlogs(blogs)
-//   //   expect(result).toEqual({ author: 'Robert C. Martin', blogs: 3 })
-//   // })
-// })
+describe('favourite blogs', () => {
+
+  test('return favourite blog post', () => {
+    const result = listHelper.favouriteBlog(blogs)
+    expect(result).toEqual(blogs[2])
+  })
+
+  test('author with the most blog posts', () => {
+    const result = listHelper.mostBlogs(blogs)
+    expect(result).toEqual({ author: 'Robert C. Martin', blogs: 3 })
+  })
+
+  test('author with the most likes', () => {
+    const result = listHelper.mostLikes(blogs)
+    expect(result).toEqual({
+      author: 'Edsger W. Dijkstra',
+      likes: 17
+    })
+  })
+
+})

@@ -1,4 +1,5 @@
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 const initialBlogs = [
   {
@@ -38,7 +39,6 @@ const initialBlogs = [
     title: 'TDD harms architecture',
     author: 'Robert C. Martin',
     url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
-    likes: 0,
     __v: 0
   },
   {
@@ -56,10 +56,18 @@ beforeEach(async () => {
 
   const blogObjects = initialBlogs
     .map(blog => new Blog(blog))
-  const promiseArray = blogObjects.map(blog => blog.save())
-  await Promise.all(promiseArray)
+  const promiseArray = blogObjects
+    .map(blog => blog.save())
+  await Promise
+    .all(promiseArray)
 })
 
+const usersInDb = async () => {
+  const users = await User.find({})
+  return users.map(u => u.toJSON())
+}
+
 module.exports = {
-  initialBlogs
+  initialBlogs,
+  usersInDb
 }

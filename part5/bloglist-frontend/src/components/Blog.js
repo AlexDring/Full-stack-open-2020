@@ -1,9 +1,8 @@
 import React, { useState } from 'react'
-import blogService from '../services/blogs'
 
 const Blog = (props) => {
-  const { blog, updateBlog, removeBlog } = props
 
+  const { blog, updateBlog, removeBlog, userCheck } = props
   const [visibility, setVisibility] = useState(false)
 
   const blogStyle = {
@@ -21,48 +20,39 @@ const Blog = (props) => {
     setVisibility(!visibility)
   }
 
-  const increaseLikes = () => {
-    updateBlog({
-      id: blog.id,
-      title: blog.title,
-      author: blog.author,
-      url: blog.url,
-      likes: blog.likes + 1
-    })
+  // const increaseLikes = () => {
+  //   updateBlog({
+  //     id: blog.id,
+  //     title: blog.title,
+  //     author: blog.author,
+  //     url: blog.url,
+  //     likes: blog.likes + 1
+  //   })
+  // }
+  const increaseLikes = {
+    id: blog.id,
+    title: blog.title,
+    author: blog.author,
+    url: blog.url,
+    likes: blog.likes + 1
   }
-
-  const deleteThisBlog = () => {
-    removeBlog(blog)
-  }
-
-  const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"))
 
 
   return(
     <div style={blogStyle}>
-      {/* {blog.title} {blog.author}
-      <Togglable buttonLabel="view">
-        <div>
-          {blog.title} {blog.author}
-          {blog.url} <br />
-          likes: {blog.likes} <button>like</button>
-        </div>
-      </Togglable>
-      <div> */} 
-        <div style={hideWhenVisible}>
-          {blog.title} {blog.author}
-          <button onClick={visibilityToggle}>show</button>
-        </div>
-        <div style={showWhenVisible}>
-          {blog.title} {blog.author}<button onClick={visibilityToggle}>hide</button> <br />
-          {blog.url} <br />
-          likes: {blog.likes} <button onClick={increaseLikes}>like</button>
-          {/* { blog.user !== undefined ? blog.user.name } */}
-          { loggedInUser.username === blog.user.username ?  <button onClick={deleteThisBlog}>delete</button> : null }
-
-        </div>
+      <div style={hideWhenVisible} className='defaultView'>
+        {blog.title} {blog.author}
+        <button onClick={visibilityToggle} className='showButton'>show</button>
+      </div>
+      <div style={showWhenVisible} className='hiddenView'>
+        {blog.title} {blog.author}<button onClick={visibilityToggle}>hide</button> <br />
+        {blog.url} <br />
+          likes: {blog.likes} <button onClick={() => updateBlog(increaseLikes)}>like</button><br />
+        {blog.user.name}
+        { userCheck === blog.user.username ?  <button onClick={() => removeBlog(blog)}>delete</button> : null }
+      </div>
     </div>
-    
+
   )
 }
 

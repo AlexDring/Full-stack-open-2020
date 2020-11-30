@@ -4,12 +4,12 @@ const BlogForm = (props) => {
 
   const { createBlog } = props
 
-  const [title, setTitle] = useState("")
-  const [author, setAuthor] = useState("")
-  const [url, setUrl] = useState("")
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   const addBlog = async (e) => {
-    console.log(createBlog)
+    // console.log(createBlog)
     e.preventDefault()
     createBlog({
       title: title,
@@ -23,20 +23,20 @@ const BlogForm = (props) => {
 
   // const { addBlog, title, author, url } = props
   return(
-    <form onSubmit={addBlog}>
+    <form onSubmit={addBlog} className='blogFormDiv'>
       <label>
         title:
-        <input type="text" value={title} onChange={({ target }) => { setTitle(target.value) }} />
+        <input id='title' type="text" value={title} onChange={({ target }) => { setTitle(target.value) }} />
       </label>
       <br />
       <label>
         author:
-        <input type="text" value={author} onChange={({ target }) => { setAuthor(target.value) }} />
+        <input id='author' type="text" value={author} onChange={({ target }) => { setAuthor(target.value) }} />
       </label>
       <br />
-    <label> 
-        url: 
-        <input type="text" value={url} onChange={({ target }) => { setUrl(target.value) }} />
+      <label>
+        url:
+        <input id='url' type="text" value={url} onChange={({ target }) => { setUrl(target.value) }} />
       </label>
       <button type="submit">create</button>
     </form>

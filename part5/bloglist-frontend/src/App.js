@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import blogService from './services/blogs'
-import loginService from './services/login' 
+import loginService from './services/login'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
@@ -8,27 +8,32 @@ import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [notification, setNotification] = useState(null)
   const [visibility, setVisibility] = useState(false)
+  const [userCheck, setUserCheck] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
-    const loggedInUser = localStorage.getItem("loggedInUser")
+    const loggedInUser = localStorage.getItem('loggedInUser')
     if(loggedInUser) {
       const user = JSON.parse(loggedInUser)
       setUser(user)
+      setUserCheck(user.username)
       blogService.setToken(user.token)
     }
     // console.log(loggedInUser);
   }, [])
+
+  console.log('test', userCheck)
+
 
   const notify = (message, type='success') => {
     setNotification({ message, type })
@@ -39,16 +44,16 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    
+
     try {
-      const user = await loginService.login({ 
+      const user = await loginService.login({
         username, password
       })// this gets routed through services/login.js to the backend where the credentials are checked. If ok the username, name and token are stored in the user state.
       blogService.setToken(user.token)
       setUser(user)
       window.localStorage.setItem('loggedInUser', JSON.stringify(user))
-      setUsername("")
-      setPassword("")
+      setUsername('')
+      setPassword('')
     } catch(error) {
       notify(error.response.data.error, 'error')
       // console.log(exception)
@@ -63,9 +68,9 @@ const App = () => {
 
   const addBlog = async (blogObject) => {
     try {
-      const addedBlog = await blogService.create(blogObject) 
+      const addedBlog = await blogService.create(blogObject)
       // console.log(addedBlog)
-      setBlogs(blogs.concat(addedBlog)) 
+      setBlogs(blogs.concat(addedBlog))
       notify(`${addedBlog.title} by ${addedBlog.author} has been added`, 'success')
       setVisibility(!visibility)
     } catch(error) {
@@ -74,9 +79,9 @@ const App = () => {
   }
 
 
-  const changeBlog = async (blogObject) => {
+  const updateBlog = async (blogObject) => {
     try {
-      console.log("updating", blogObject)
+      console.log('updating', blogObject)
       const changedBlog = await blogService.update(blogObject)
       const response = blogs.map(blog => blog.id === blogObject.id ? changedBlog : blog )
       setBlogs(response)
@@ -97,34 +102,34 @@ const App = () => {
       console.log(error)
     }
   }
-  
-  
-  
+
+
+
   if (user === null) {
     return (
       <div>
-        { !notification ? null : <div className={ notification.type === 'success' ? "success" : "error" }>{notification.message}</div> }
+        { !notification ? null : <div className={ notification.type === 'success' ? 'success' : 'error' }>{notification.message}</div> }
         <h2>Login to the application</h2>
         <form onSubmit={handleLogin}>
           <div>
-            <input 
-              type="text" 
-              value={username} 
-              name="username"
-              onChange={({ target }) => setUsername(target.value)}  
-              placeholder="username"
+            <input
+              type='text'
+              value={username}
+              name='username'
+              onChange={({ target }) => setUsername(target.value)}
+              placeholder='username'
             />
           </div>
           <div>
-            <input 
-              type="password" 
+            <input
+              type='password'
               value={password}
-              name="password"
-              onChange={({ target }) => setPassword(target.value)}  
-              placeholder="password"
+              name='password'
+              onChange={({ target }) => setPassword(target.value)}
+              placeholder='password'
             />
           </div>
-          <button type="submit">login</button>
+          <button type='submit'>login</button>
         </form>
       </div>
     )
@@ -132,25 +137,25 @@ const App = () => {
 
   return (
     <div>
-    <h2>blogs</h2>
-    { !notification 
-      ? null 
-      : <div className={ notification.type === 'success' ? "success" : "error" }>
-        {notification.message}
-      </div> }
-     <div>Logged in as {user.name}<button type="submit" onClick={handleLogout}>logout</button></div>
-    <h2>create new</h2>
-    <Togglable buttonLabel={"new note"}>
-      <BlogForm createBlog={addBlog} />
-    </Togglable>
-    
-    {[...blogs]
-      .sort((a,b) => b.likes > a.likes ? 1 : -1)
-      .map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlog={changeBlog} removeBlog={removeBlog} />
-    )} 
-    {/*REVIEW- https://stackoverflow.com/questions/43572436/sort-an-array-of-objects-in-react-and-render-them*/}
-   </div> 
+      <h2>blogs</h2>
+      { !notification
+        ? null
+        : <div className={ notification.type === 'success' ? 'success' : 'error' }>
+          {notification.message}
+        </div> }
+      <div>Logged in as {user.name}<button type='submit' onClick={handleLogout}>logout</button></div>
+      <h2>create new</h2>
+      <Togglable buttonLabel='new note'>
+        <BlogForm createBlog={addBlog} />
+      </Togglable>
+
+      {[...blogs]
+        .sort((a,b) => b.likes > a.likes ? 1 : -1)
+        .map(blog =>
+          <Blog key={blog.id} blog={blog} userCheck={userCheck} updateBlog={updateBlog} removeBlog={removeBlog} />
+        )}
+      {/*REVIEW- https://stackoverflow.com/questions/43572436/sort-an-array-of-objects-in-react-and-render-them*/}
+    </div>
   )
 
 }

@@ -36,10 +36,10 @@ const Blog = (props) => {
     url: blog.url,
     likes: blog.likes + 1
   }
-
+  console.log('testing user', blog.user)
 
   return(
-    <div style={blogStyle}>
+    <div style={blogStyle} id='single-blog'>
       <div style={hideWhenVisible} className='defaultView'>
         {blog.title} {blog.author}
         <button onClick={visibilityToggle} className='showButton'>show</button>
@@ -47,7 +47,7 @@ const Blog = (props) => {
       <div style={showWhenVisible} className='hiddenView'>
         {blog.title} {blog.author}<button onClick={visibilityToggle}>hide</button> <br />
         {blog.url} <br />
-          likes: {blog.likes} <button onClick={() => updateBlog(increaseLikes)}>like</button><br />
+          likes: {blog.likes} <button id='like-button' onClick={() => updateBlog(increaseLikes)}>like</button><br />
         {blog.user.name}
         { userCheck === blog.user.username ?  <button onClick={() => removeBlog(blog)}>delete</button> : null }
       </div>

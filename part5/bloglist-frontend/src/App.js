@@ -29,10 +29,11 @@ const App = () => {
       setUserCheck(user.username)
       blogService.setToken(user.token)
     }
-    // console.log(loggedInUser);
+    console.log(loggedInUser)
   }, [])
 
   console.log('test', userCheck)
+  console.log('test', user)
 
 
   const notify = (message, type='success') => {
@@ -110,9 +111,10 @@ const App = () => {
       <div>
         { !notification ? null : <div className={ notification.type === 'success' ? 'success' : 'error' }>{notification.message}</div> }
         <h2>Login to the application</h2>
-        <form onSubmit={handleLogin}>
+        <form id="loginForm" onSubmit={handleLogin}>
           <div>
             <input
+              id='username'
               type='text'
               value={username}
               name='username'
@@ -122,6 +124,7 @@ const App = () => {
           </div>
           <div>
             <input
+              id='password'
               type='password'
               value={password}
               name='password'
@@ -129,7 +132,7 @@ const App = () => {
               placeholder='password'
             />
           </div>
-          <button type='submit'>login</button>
+          <button id='login-button' type='submit'>login</button>
         </form>
       </div>
     )
@@ -145,16 +148,17 @@ const App = () => {
         </div> }
       <div>Logged in as {user.name}<button type='submit' onClick={handleLogout}>logout</button></div>
       <h2>create new</h2>
-      <Togglable buttonLabel='new note'>
+      <Togglable buttonLabel='new blog'>
         <BlogForm createBlog={addBlog} />
       </Togglable>
-
-      {[...blogs]
-        .sort((a,b) => b.likes > a.likes ? 1 : -1)
-        .map(blog =>
-          <Blog key={blog.id} blog={blog} userCheck={userCheck} updateBlog={updateBlog} removeBlog={removeBlog} />
-        )}
-      {/*REVIEW- https://stackoverflow.com/questions/43572436/sort-an-array-of-objects-in-react-and-render-them*/}
+      <div className="blogs">
+        {[...blogs]
+          .sort((a,b) => b.likes > a.likes ? 1 : -1)
+          .map(blog =>
+            <Blog key={blog.id} blog={blog} userCheck={userCheck} updateBlog={updateBlog} removeBlog={removeBlog} />
+          )}
+        {/*REVIEW- https://stackoverflow.com/questions/43572436/sort-an-array-of-objects-in-react-and-render-them*/}
+      </div>
     </div>
   )
 

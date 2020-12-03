@@ -29,6 +29,7 @@ describe('<Blog />', () => {
     fireEvent.click(component.container.querySelector('.showButton'))
     expect(component.container.querySelector('.defaultView')).toHaveStyle('display: none;')
     expect(component.container.querySelector('.hiddenView')).toHaveStyle('')
+    expect(component.container.querySelector('.hiddenView')).toHaveTextContent('likes:')
   })
   test('if the like button is clicked twice, the event handler is called twice', () => {
     const mockHandler = jest.fn()

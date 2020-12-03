@@ -38,7 +38,7 @@ const BlogForm = (props) => {
         url:
         <input id='url' type="text" value={url} onChange={({ target }) => { setUrl(target.value) }} />
       </label>
-      <button type="submit">create</button>
+      <button id='create-blog' type="submit">create</button>
     </form>
   )
 }

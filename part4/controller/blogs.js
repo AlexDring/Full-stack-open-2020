@@ -30,6 +30,7 @@ blogsRouter.get('/:id', async (request, response) => {
 // }
 
 blogsRouter.post('/', async (request, response) => {
+
   const body = request.body
   // send request to authorisation function above
   // const token = getToken(request)
@@ -49,7 +50,7 @@ blogsRouter.post('/', async (request, response) => {
 
   // attach id to new blog post by filling find user below
   const user = await User.findById(verifiedToken.id)// wait for the user to be found by the id sent in the request to create the blog post.
-  // console.log('user._id - ', user._id)
+  console.log('user._id - ', user._id)
   const blog = new Blog({
     title: body.title,
     author: body.author,
@@ -70,8 +71,10 @@ blogsRouter.post('/', async (request, response) => {
   }
 })
 
-blogsRouter.put('/:id', async(request, response) => {
+blogsRouter.put('/:id', async (request, response) => {
+  console.log('url', request.params.id)
   const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, request.body, { new: true })
+  console.log('response', updatedBlog)
   response.json(updatedBlog)
 })
 
@@ -86,9 +89,11 @@ blogsRouter.delete('/:id', async (request, response) => {
       error: 'token missing or invalid'
     })
   }
+  console.log(request.params.id)
   // console.log('token', verifiedToken, typeof verifiedToken.username)
   // get blog
   const blog = await Blog.findById(request.params.id)
+  console.log(blog)
   if ( blog.user.toString() === verifiedId.toString() ) {
     await Blog.findByIdAndRemove(request.params.id)
     response.status(202).end()

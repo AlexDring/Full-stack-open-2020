@@ -2,10 +2,15 @@ const notificationReducer = (state = null, action) => {
   console.log('state now: ', state)
   console.log('action', action)
     switch (action.type) {
-      case 'SET_NOTIFICATION': 
-        return action.data
+      case 'SET_NOTIFICATION': {
+        // const notify = [action.data, action.timer]
+        return {
+          message: action.data,
+          timerID: action.timer
+        }
+      }
       case 'CLEAR_NOTIFICATION': 
-        return null
+        return null 
     default: // if none of the above matches, code comes here
     }
   return state
@@ -17,14 +22,39 @@ const notificationReducer = (state = null, action) => {
 //     data: notification
 //   }
 // }
-export const setNotification = (notification, time) => {
+export const setNotification = (setNotification, time) => {
   // console.log('notification', notification);
   // console.log('time', time);
-  return dispatch => {
-    dispatch({ type: 'SET_NOTIFICATION', data: notification })
-    setTimeout(() => {
-      dispatch({ type: 'CLEAR_NOTIFICATION' }) // why does dispatching null not work?
-   }, time * 1000)
+  return (dispatch, getState) => {
+    const { notification } = getState()
+    console.log('notification state: ', notification);
+
+    if(notification) {
+      clearTimeout(notification.timerID)
+    }
+    let timerSet = setTimeout(() => {
+      dispatch({ type: 'CLEAR_NOTIFICATION' })
+    }, time * 1000)
+    
+    dispatch({ type: 'SET_NOTIFICATION', data: setNotification, timer: timerSet })
+    
+    
+    // function timer() {
+    //   timerSet = setTimeout(() => {
+    //   dispatch({ type: 'CLEAR_NOTIFICATION' })
+    //   }, time * 1000)
+    // }
+    // function clearTimer(timerSet) {
+    //   clearTimeout(timerSet)
+    // }
+    // console.log('isit?', notification);
+    // if(notification) {
+    //   clearTimer(timerSet)
+    // }
+    // dispatch({ type: 'SET_NOTIFICATION', data: setNotification })
+    // timer()
+    // console.log('timerSet', timerSet);
+    
   }
 }
 

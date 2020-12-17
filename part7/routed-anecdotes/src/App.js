@@ -6,6 +6,8 @@ import {
   useRouteMatch,
   useHistory
 } from 'react-router-dom'
+import { useField } from './hooks/index'
+
 
 const Menu = () => {
   const padding = {
@@ -74,19 +76,31 @@ const Footer = () => (
 )
 
 const CreateNew = (props) => {
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
-  const history = useHistory();
-  console.log('history', history);
+  const { reset: contentReset, ...content } = useField('text') 
+  const { reset: authorReset, ...author } = useField('text')
+  const { reset: infoReset, ...info } = useField('text')// <-- destructuring to remove 'reset' from inputs. Details on assigning new name here - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#Assigning_to_new_variable_names 
 
+  // const [content, setContent] = useState('')
+  // const [author, setAuthor] = useState('')
+  // const [info, setInfo] = useState('')
+  const history = useHistory();
+
+  // console.log('content', content);
+  // console.log('content', author);
+  // console.log('content', info);
+  
+  const handleReset = () => {
+    contentReset()
+    authorReset()
+    infoReset()
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
-      content,
-      author,
-      info,
+      content: content.value,
+      author: author.value,
+      info: info.value,
       votes: 0
     })
     history.push('/')
@@ -98,17 +112,29 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
+          <input name='content'
+          //  name='content' value={content} onChange={(e) => setContent(e.target.value)} 
+          // name='content' type={content.type} value={content.value} onChange={content.onChange}
+          { ...content }
+           />
         </div>
         <div>
           author
-          <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
+          <input name='author'
+          // name='author' value={author} onChange={(e) => setAuthor(e.target.value)} 
+          // name='author' type={author.type} value={author.value} onChange={author.onChange}
+          { ...author }
+          />
         </div>
         <div>
           url for more info
-          <input name='info' value={info} onChange={(e)=> setInfo(e.target.value)} />
+          <input name='info' 
+          // name='info' value={info} onChange={(e)=> setInfo(e.target.value)} 
+          // name='info' type={info.type} value={info.value} onChange={info.onChange}
+          { ...info }
+          />
         </div>
-        <button>create</button>
+        <button type='submit'>create</button><input onClick={handleReset} type='reset' />
       </form>
     </div>
   )
@@ -143,9 +169,9 @@ const App = () => {
 
   const newNotification = (notification) => {
     setNotification(notification)
-    {setTimeout(() => {
+    setTimeout(() => {
       setNotification(null)
-    }, 10000)}
+    }, 10000)
   }
 
   const anecdoteById = (id) =>
@@ -169,8 +195,6 @@ const App = () => {
       return Number(anecdote.id) === Number(match.params.id)
     }) //TODO If the url matches /notes/:id, the match variable will contain an object from which we can access the parametrized part of the path, the id of the note to be displayed, and we can then fetch the correct note to display.
     : null 
-
-    console.log(notification);
 
   return (
     <div>
@@ -198,4 +222,4 @@ const App = () => {
   )
 }
 
-export default App;
+export default App

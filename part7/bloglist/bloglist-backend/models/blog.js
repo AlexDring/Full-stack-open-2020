@@ -7,8 +7,12 @@ const blogSchema = new Schema({
   url: String,
   likes: Number,
   date: Date,
+  comments: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Comments'
+  }],
   user: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   }
 })

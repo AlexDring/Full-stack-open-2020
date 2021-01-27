@@ -1,72 +1,57 @@
-import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { increaseLikes, deleteBlog } from '../reducers/blogReducer'
+import React from 'react'
+import { useParams } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { increaseLikes, deleteBlog, newComment } from '../reducers/blogReducer'
 
-const Blog = (props) => {
-  // console.log(props)
-  console.log(props)
-  const { blog, user } = props
+const Blog = ({ blogs, user }) => {
   const dispatch = useDispatch()
-  // const { blog, updateBlog, removeBlog, owner } = props
-  const [visibility, setVisibility] = useState(false)
-  console.log(user)
-
-  const owner = (blog.user.username === user)
-
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    borderWidth: 1,
-    border: 'solid',
-    marginBottom: 5
-  }
-
-  const hideWhenVisible = { display: visibility ? 'none' : '' }
-  const showWhenVisible = { display: visibility ? '' : 'none' }
-
-  const visibilityToggle = () => {
-    setVisibility(!visibility)
-  }
-
-  // const increaseLikes = () => {
-  //   updateBlog({
-  //     id: blog.id,
-  //     title: blog.title,
-  //     author: blog.author,
-  //     url: blog.url,
-  //     likes: blog.likes + 1
-  //   })
-  // }
-  const blogs = useSelector(state => state.blogs)
+  const id = useParams().id
+  const blog = blogs.find(blog => blog.id === id)
 
   const updateBlog = (id) => {
     const likeID = blogs.find(blog => blog.id === id)
-    console.log(likeID)
     dispatch(increaseLikes(likeID))
   }
+
+  const addComment = (e) => {
+    e.preventDefault()
+    const comment = {
+      comment: e.target.comment.value,
+      blogId: blog.id
+    }
+    e.target.comment.value = ''
+    // console.log('component', comment)
+    dispatch(newComment(comment))
+  }
+
   const removeBlog = (id) => {
-    // console.log(id)
-    // const deleteID = blogs.find(blog => blog.id === id)
-    // console.log(deleteID)
     dispatch(deleteBlog(id))
   }
 
-  return(
-    <div style={blogStyle} id='single-blog'>
-      <div style={hideWhenVisible} className='defaultView'>
-        {blog.title} {blog.author}
-        <button onClick={visibilityToggle} className='showButton'>show</button>
-      </div>
-      <div style={showWhenVisible} className='hiddenView'>
-        title: {blog.title} author: {blog.author}<button onClick={visibilityToggle}>hide</button> <br />
-        url: {blog.url} <br />
-        likes: {blog.likes} <button id='like-button' onClick={() => updateBlog(blog.id)}>like</button><br /> {/* // TODO LOOK AT THIS TOMORROW - how does it get the clicked id how is it passed in?? */}
-        {blog.user.name}
-        {/* {owner && <button onClick={() => removeBlog(blog)}>delete</button>} */}
-        {owner && <button onClick={() => removeBlog(blog.id)}>delete</button>}
-      </div>
-    </div>
 
+  if (!blog) {
+    return null
+  }
+  // // blog.comments.map(comment => console.log(comment))
+  // console.log('BLOG', blog)
+  // console.log('BLOG.USER', blog.user)
+  // console.log('BLOG.USER.NAME', blog.user.name)
+  return(
+    <div>
+      <h1>{blog.title} by {blog.author}</h1>
+      <a href={blog.url}>{blog.url}</a>
+      <div>{blog.likes} likes <button id='like-button' onClick={() => updateBlog(blog.id)}>like</button></div>
+      <div>added by {blog.user.name}  {blog.user.username===user.username && <button onClick={() => removeBlog(blog.id)}>delete</button>}</div>
+      <h2>comments</h2>
+      <form onSubmit={addComment}>
+        <input type="text" name="comment"/><button type="submit">add comment</button>
+      </form>
+      <ul>
+        {blog.comments.map(comment =>
+          <li key={comment._id}>{comment.comment}</li>
+        )}
+      </ul>
+    </div>
   )
 }
 

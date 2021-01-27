@@ -2,10 +2,10 @@
 import axios from 'axios'
 const baseUrl = '/api/blogs'
 
-let token = null
-
-const setToken = newToken => {
-  token = `bearer ${newToken}`
+const getConfig = () => {
+  return {
+    headers: { Authorization: `bearer ${JSON.parse(localStorage.getItem('loggedInUser')).token}` }
+  }
 }
 
 const getAll = async () => {
@@ -14,29 +14,23 @@ const getAll = async () => {
 }
 
 const create = async blogObject => {
+  // debugger
   // console.log(baseUrl)
   // console.log('blogObject', blogObject)
   // console.log('Token', token)
-  const config = {
-    headers: { Authorization: token }
-  }
-  // console.log('config', config);
-  console.log(baseUrl, blogObject, config)
-  const response = await axios.post(baseUrl, blogObject, config)
 
+  // console.log('config', config);
+
+  const response = await axios.post(baseUrl, blogObject, getConfig())
   return response.data
 }
 
 const deleteBlog = async blogId => {
-  const config = {
-    headers: { Authorization: token }
-  }
   const url = `${baseUrl}/${blogId}`
   console.log(url)
-  const response = await axios.delete(url, config)
+  const response = await axios.delete(url, getConfig())
   return response.data
 }
-
 // const update = async blogObject => {
 //   // debugger
 //   const url = `${baseUrl}/${blogObject.id}`
@@ -52,13 +46,17 @@ const deleteBlog = async blogId => {
 // }
 
 const update = (blog) => {
-  const config = {
-    headers: { Authorization: token }
-  }
-
-  const request = axios.put(`${baseUrl}/${blog.id}`, blog, config)
+  console.log(`${baseUrl}/${blog.id}`, blog)
+  const request = axios.put(`${baseUrl}/${blog.id}`, blog, getConfig())
   return request.then(response => response.data)
 }
 
+const createComment = async comment => {
+  console.log('services', comment)
+  const url = `${baseUrl}/${comment.blogId}/comments`
 
-export default { getAll, create, setToken, update, deleteBlog }
+  const request = axios.post(url, comment)
+  return request.then(response => response.data)
+}
+
+export default { getAll, create, update, deleteBlog, createComment }

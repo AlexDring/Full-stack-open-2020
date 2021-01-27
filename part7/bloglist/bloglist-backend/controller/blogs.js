@@ -3,10 +3,13 @@ const jwt = require('jsonwebtoken')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
+
 blogsRouter.get('/', async (request, response) => {
   const blog = await Blog
     .find({})
     .populate('user', { username: 1, name: 1 })
+    .populate('comments', { comment: 1 })
+  console.log('WTF', blog)
   response.json(blog)
 })
 
@@ -51,6 +54,9 @@ blogsRouter.post('/', async (request, response) => {
 blogsRouter.put('/:id', async (request, response) => {
   console.log('THIS', request.params.id, request.body)
   const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, request.body, { new: true })
+    .populate('user', { username: 1, name: 1 })
+    .populate('comments', { comment: 1 })
+  console.log('updatedBlog', updatedBlog)
   response.json(updatedBlog)
 })
 

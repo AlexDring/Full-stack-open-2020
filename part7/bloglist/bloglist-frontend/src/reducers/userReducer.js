@@ -1,5 +1,6 @@
 import loginService from '../services/login'
 // import blogService from '../services/blogs'
+import { setNotification } from '../reducers/notificationReducer'
 
 const userReducer = (state = null, action) => {
   switch(action.type) {
@@ -19,13 +20,17 @@ const userReducer = (state = null, action) => {
 export const userLogin = (user) => {
   console.log(user)
   return async dispatch => {
-    const userCheck = await loginService.login(user)
-    window.localStorage.setItem('loggedInUser', JSON.stringify(userCheck))
-    // console.log(userCheck)
-    dispatch({
-      type: 'LOGIN',
-      payload: userCheck
-    })
+    try {
+      const userCheck = await loginService.login(user)
+      window.localStorage.setItem('loggedInUser', JSON.stringify(userCheck))
+      // console.log(userCheck)
+      dispatch({
+        type: 'LOGIN',
+        payload: userCheck
+      })
+    } catch(error) {
+      dispatch(setNotification({ message: error.response.data.error, class: 'error' }))
+    }
   }
 }
 

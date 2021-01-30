@@ -1,6 +1,9 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+import {
+  Paper,
+  Typography } from '@material-ui/core'
 
 const BlogList = () => {
   const blogs = useSelector(state => state.blogs)
@@ -8,20 +11,27 @@ const BlogList = () => {
   const sorted = blogs.sort(byLikes)
 
   const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    borderWidth: 1,
-    border: 'solid',
-    marginBottom: 5
+    padding: 30,
+    margin : '16px 0'
+  }
+  const likes = {
+    marginLeft: 'auto'
   }
 
   return (
     <div className="blogs">
       {sorted.map(blog =>
         // <Blog key={blog.id} blog={blog} owner={blog.user.username===user.username} />
-        <div key={blog.id} style={blogStyle} id='single-blog'>
-          <Link to={`/blogs/${blog.id}`}>{blog.title}</Link> by {blog.author} likes: {blog.likes}
-        </div>
+        <Paper variant='outlined' key={blog.id} style={blogStyle} id='single-blog'>
+          <Typography variant='h6' component='h6'>
+            <Link to={`/blogs/${blog.id}`}>
+              {blog.title}
+            </Link> by {blog.author} <span style={likes}>likes: {blog.likes}</span>
+          </Typography>
+        </Paper>
+        // <div key={blog.id} style={blogStyle} id='single-blog'>
+        //   <Link to={`/blogs/${blog.id}`}>{blog.title}</Link> by {blog.author} likes: {blog.likes}
+        // </div>
       )}
     </div>
   )}

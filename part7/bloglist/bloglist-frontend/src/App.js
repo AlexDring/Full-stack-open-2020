@@ -13,12 +13,20 @@ import  Blog from './components/Blog'
 import { initBlogs } from './reducers/blogReducer'
 import { loadUser, userLogout } from './reducers/userReducer'
 import userService from './services/users'
+import { Container, AppBar, Toolbar, IconButton, Button, makeStyles } from '@material-ui/core'
+
+const useStyles = makeStyles((theme) => ({
+  homeContent: {
+    padding: theme.spacing(8, 0, 6)
+  }
+}))
 
 const App = () => {
   const [users, setUsers] = useState()
   const dispatch = useDispatch()
   const loggedIn = useSelector(state => state.user)
   const blogs = useSelector(state => state.blogs)
+  const classes = useStyles()
 
   useEffect(() => {
     dispatch(initBlogs())
@@ -43,44 +51,58 @@ const App = () => {
     dispatch(userLogout())
   }
 
-  const padding = {
-    padding: 5
+  const loginDetails = {
+    marginLeft: 'auto'
   }
 
   if (loggedIn === null) {
     return (
-      <div>
-        <Notification />
-        <LoginForm />
-      </div>
+      <Container>
+        <div className={classes.homeContent}>
+          <Notification />
+          <LoginForm />
+        </div>
+      </Container>
     )
   }
   return (
-    <div>
-      <div>
-        <Link style={padding} to="/">blogs</Link>
-        <Link style={padding} to="/users">users</Link>
-        <em>{loggedIn.name} logged in <button type='submit' onClick={handleLogout}>logout</button></em>
-      </div>
-      <h2>blogs</h2>
-      <Notification />
-      {/* <Logout name={loggedIn.name} /> */}
-
-      <Switch>
-        <Route path='/users/:id'>
-          <User users={users} />
-        </Route>
-        <Route path='/users'>
-          <Users users={users} />
-        </Route>
-        <Route path='/blogs/:id'>
-          <Blog blogs={blogs} user={loggedIn} />
-        </Route>
-        <Route path='/' >
-          <Home user={loggedIn} />
-        </Route>
-      </Switch>
-    </div>)
+    <>
+      <AppBar position='static'>
+        <Toolbar>
+          <IconButton edge="start" color="inherit" aria-label="menu">
+          </IconButton>
+          <Button color="inherit" component={Link} to="/">
+            blogs
+          </Button>
+          <Button color="inherit" component={Link} to="/users">
+            users
+          </Button>
+          <em style={loginDetails}>{loggedIn.name} logged in <Button color="inherit"  type='submit' onClick={handleLogout}>logout</Button></em>
+        </Toolbar>
+      </AppBar>
+      <main>
+        <div className={classes.homeContent}>
+          <Container>
+            <Notification />
+            {/* <Logout name={loggedIn.name} /> */}
+            <Switch>
+              <Route path='/users/:id'>
+                <User users={users} />
+              </Route>
+              <Route path='/users'>
+                <Users users={users} />
+              </Route>
+              <Route path='/blogs/:id'>
+                <Blog blogs={blogs} user={loggedIn} />
+              </Route>
+              <Route path='/' >
+                <Home user={loggedIn} />
+              </Route>
+            </Switch>
+          </Container>
+        </div>
+      </main>
+    </>)
 }
 
 export default App

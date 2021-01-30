@@ -1,8 +1,16 @@
 import React from 'react'
+import { useHistory } from 'react-router-dom'
+
 import { userLogin } from '../reducers/userReducer'
 import { useDispatch } from 'react-redux'
+import {
+  TextField,
+  Typography,
+  Container,
+  Button } from '@material-ui/core'
 
 const LoginForm = () => {
+  const history = useHistory()
   const dispatch = useDispatch()
 
   const handleLogin = (e) => {
@@ -11,34 +19,45 @@ const LoginForm = () => {
       username: e.target.username.value,
       password: e.target.password.value
     }
+
     dispatch(userLogin(login))
     e.target.username.value = ''
     e.target.password.value = ''
+    history.push('/')
+  }
+
+  const loginStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    maxWidth: '250px'
   }
 
   return(
-    <div>
-      <h2>Login to the application TEST</h2>
-      <form id="loginForm" onSubmit={handleLogin}>
-        <div>
-          <input
-            id='username'
-            type='text'
-            name='username'
-            placeholder='username'
-          />
-        </div>
-        <div>
-          <input
-            id='password'
-            type='password'
-            name='password'
-            placeholder='password'
-          />
-        </div>
-        <button id='login-button' type='submit'>login</button>
+    <Container>
+      <Typography variant="subtitle1">
+        Login to the application
+      </Typography>
+      {/* <h2>Login to the application TEST</h2> */}
+      <form style={loginStyle} id="loginForm" onSubmit={handleLogin}>
+        <TextField
+          variant="outlined"
+          label='username'
+          id='username'
+          name='username'
+          placeholder='username'/>
+        <TextField
+          variant="outlined"
+          label='password'
+          type='password'
+          name='password'
+          placeholder='password'
+        />
+        <Button variant="contained" color="primary" id='login-button' type='submit'>
+          login
+        </Button>
+        {/* <button id='login-button' type='submit'>login</button> */}
       </form>
-    </div>
+    </Container>
   )
 }
 

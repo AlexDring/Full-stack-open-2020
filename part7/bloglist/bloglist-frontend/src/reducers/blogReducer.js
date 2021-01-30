@@ -1,5 +1,5 @@
 import blogService from '../services/blogs'
-
+import { setNotification } from '../reducers/notificationReducer'
 // const byLikes = (a1, a2) => a2.likes - a1.likes
 
 const blogReducer = (state = [], action) => {
@@ -21,6 +21,7 @@ const blogReducer = (state = [], action) => {
     return state.filter(blog => blog.id !== action.data)
   }
   case 'NEW_COMMENT': {
+    console.log(action.payload)
     return state.map(blog => {
       if (blog.id !== action.payload.blogId) {
         return blog
@@ -30,13 +31,6 @@ const blogReducer = (state = [], action) => {
         comments: [...blog.comments, action.payload.comment]
       }
     })}
-  // return state.map(blog => {
-  //   // eslint-disable-next-line no-debugger
-  //   debugger
-  //   blog.id !== action.payload.blogId
-  //     ? blog
-  //     : { ...blog, comments: [...blog.comments, action.payload.comment] }
-  // })}
   default:
     return state
   }
@@ -69,11 +63,15 @@ export const initBlogs = () => {
 
 export const createBlog = (newBlog) => {
   return async dispatch => {
-    const addedBlog = await blogService.create(newBlog)
-    dispatch ({
-      type: 'NEW_BLOG',
-      payload: addedBlog
-    })
+    try {
+      const addedBlog = await blogService.create(newBlog)
+      dispatch ({
+        type: 'NEW_BLOG',
+        payload: addedBlog
+      })
+    } catch(error) {
+      dispatch(setNotification({ message: `blog not added - ${error.response.data.error}`, class: 'error' }))
+    }
   }
 }
 
@@ -91,11 +89,15 @@ export const increaseLikes = (blog) => {
 
 export const deleteBlog = (id) => {
   return async dispatch => {
-    await blogService.deleteBlog(id)
-    dispatch({
-      type: 'DELETE_BLOG',
-      data: id
-    })
+    try {
+      await blogService.deleteBlog(id)
+      dispatch({
+        type: 'DELETE_BLOG',
+        data: id
+      })
+    } catch(error) {
+      console.log(error)
+    }
   }
 }
 

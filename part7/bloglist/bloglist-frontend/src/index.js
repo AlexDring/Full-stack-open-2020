@@ -8,10 +8,12 @@ import {
 
 import App from './App'
 import './index.css'
+import { CssBaseline } from '@material-ui/core'
 
 render(
   <Provider store={store}>
     <Router>
+      <CssBaseline />
       <App />
     </Router>
   </Provider>,

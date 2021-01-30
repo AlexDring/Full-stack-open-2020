@@ -1,5 +1,6 @@
 import React, { useState, useImperativeHandle } from 'react'
 import PropTypes from 'prop-types'
+import { Button } from '@material-ui/core'
 
 // const Togglable = (props) => {
 // eslint-disable-next-line react/display-name
@@ -23,11 +24,11 @@ const Togglable = React.forwardRef((props, ref) => { // TODO React.forwardRef cr
   return(
     <div>
       <div style={hideWhenVisible}>
-        <button id='visibility-show' onClick={visibilityToggle}>{props.buttonLabel}</button>
+        <Button variant="outlined" color="primary" id='visibility-show' onClick={visibilityToggle}>{props.buttonLabel}</Button>
       </div>
       <div style={showWhenVisible}>
         {props.children}
-        <button onClick={visibilityToggle}>cancel</button>
+        <Button onClick={visibilityToggle}>cancel</Button>
       </div>
     </div>
   )

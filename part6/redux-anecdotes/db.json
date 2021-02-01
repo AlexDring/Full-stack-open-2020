@@ -3,7 +3,7 @@
     {
       "content": "If it hurts, do it more often",
       "id": "47145",
-      "votes": 9
+      "votes": 10
     },
     {
       "content": "Adding manpower to a late software project makes it later!",
@@ -23,16 +23,16 @@
     {
       "content": "Premature optimization is the root of all evil.",
       "id": "25170",
-      "votes": 90
+      "votes": 92
     },
     {
       "content": "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
       "id": "98312",
-      "votes": 62
+      "votes": 64
     },
     {
       "content": "test",
-      "votes": 11,
+      "votes": 12,
       "id": "S-y7C_Y"
     },
     {
@@ -47,7 +47,7 @@
     },
     {
       "content": "YOYOYOYO",
-      "votes": 44,
+      "votes": 45,
       "id": "oxhHjcI"
     },
     {
@@ -84,6 +84,41 @@
       "content": "213",
       "votes": 0,
       "id": "uVjxSMr"
+    },
+    {
+      "content": "test1",
+      "votes": 0,
+      "id": "PD-GQFr"
+    },
+    {
+      "content": "test2",
+      "votes": 0,
+      "id": "kJVbkOx"
+    },
+    {
+      "content": "test3",
+      "votes": 0,
+      "id": "i3AhZSy"
+    },
+    {
+      "content": "test",
+      "votes": 0,
+      "id": "iyeqaYI"
+    },
+    {
+      "content": "2",
+      "votes": 0,
+      "id": "EliaGo6"
+    },
+    {
+      "content": "3",
+      "votes": 0,
+      "id": "2Vt4d_X"
+    },
+    {
+      "content": "4",
+      "votes": 0,
+      "id": "s3r1DVI"
     }
   ]
 }

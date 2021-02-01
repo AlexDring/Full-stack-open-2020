@@ -13,7 +13,6 @@ const useStyles = makeStyles((theme) => ({
 const Notification = () => {
   const classes = useStyles()
   const notification = useSelector(state => state.notification)
-  console.log('tonk', notification)
 
   if (!notification) {
     return null
@@ -24,9 +23,6 @@ const Notification = () => {
   }
 
   return (
-    // <div className={ notification.class === 'success' ? 'success' : 'error' }>
-    //   {notification.message}
-    // </div>
     <div className={classes.root}>
       <Alert severity={notification.class === 'success' ? 'success' : 'error'}>
         {notification.message}

@@ -19,7 +19,6 @@ const Home = () => {
         <BlogForm />
       </Togglable>
       <BlogList />
-      {/* <BlogList user={user.username} /> */}
     </>
   )}
 

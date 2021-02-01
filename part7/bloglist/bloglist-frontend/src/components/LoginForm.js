@@ -37,7 +37,6 @@ const LoginForm = () => {
       <Typography variant="subtitle1">
         Login to the application
       </Typography>
-      {/* <h2>Login to the application TEST</h2> */}
       <form style={loginStyle} id="loginForm" onSubmit={handleLogin}>
         <TextField
           variant="outlined"
@@ -55,7 +54,6 @@ const LoginForm = () => {
         <Button variant="contained" color="primary" id='login-button' type='submit'>
           login
         </Button>
-        {/* <button id='login-button' type='submit'>login</button> */}
       </form>
     </Container>
   )

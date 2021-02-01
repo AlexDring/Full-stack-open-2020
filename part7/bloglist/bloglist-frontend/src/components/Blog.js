@@ -8,7 +8,12 @@ import {
   List,
   ListItem,
   ListItemText,
-  IconButton, Button, TextField, Breadcrumbs, Divider, makeStyles } from '@material-ui/core'
+  IconButton,
+  Button,
+  TextField,
+  Breadcrumbs,
+  Divider,
+  makeStyles } from '@material-ui/core'
 
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder'
 import FavoriteIcon from '@material-ui/icons/Favorite'
@@ -42,7 +47,6 @@ const Blog = ({ blogs, user }) => {
       blogId: blog.id
     }
     e.target.comment.value = ''
-    // console.log('component', comment)
     dispatch(newComment(comment))
   }
 
@@ -90,7 +94,6 @@ const Blog = ({ blogs, user }) => {
 
         <List>
           {blog.comments.map(comment =>
-            // <li key={comment._id}>{comment.comment}</li>
             <ListItem key={comment._id}>
               <ListItemText>
                 {comment.comment}

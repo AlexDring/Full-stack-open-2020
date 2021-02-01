@@ -1,6 +1,4 @@
 const notificationReducer = (state = null, action) => {
-  // console.log('state now: ', state)
-  // console.log('action', action)
   switch (action.type) {
   case 'SET_NOTIFICATION': {
     return action.content
@@ -13,7 +11,6 @@ const notificationReducer = (state = null, action) => {
 }
 
 export const setNotification = (content) => {
-  console.log('initial content', content)
   return async dispatch => {
     dispatch({
       type: 'SET_NOTIFICATION',

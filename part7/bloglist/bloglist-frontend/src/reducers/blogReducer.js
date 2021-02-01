@@ -14,7 +14,6 @@ const blogReducer = (state = [], action) => {
     return state.map(blog => likedBlog.id===blog.id ? likedBlog : blog)
   }
   case 'DELETE_BLOG': {
-    console.log(action.data)
     return state.filter(blog => blog.id !== action.data)
   }
   case 'NEW_COMMENT': {
@@ -35,7 +34,6 @@ const blogReducer = (state = [], action) => {
 export const newComment = (comment) => {
   return async dispatch => {
     const createdComment = await blogService.createComment(comment)
-    console.log('post service', createdComment)
     const newComment = {
       comment: createdComment,
       blogId: comment.blogId
@@ -73,9 +71,7 @@ export const createBlog = (newBlog) => {
 
 export const increaseLikes = (blog) => {
   return async dispatch => {
-    // const likedBlog = { ...blog, likes: blog.likes + 1, user: blog.user.id }
     const updateLikes = await blogService.update({ ...blog, likes: blog.likes + 1, user: blog.user.id })
-    console.log('updateLikes', updateLikes)
     dispatch({
       type: 'INCREASE_LIKES',
       payload: updateLikes

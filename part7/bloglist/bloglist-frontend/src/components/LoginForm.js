@@ -1,7 +1,7 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom'
 
-import { userLogin } from '../reducers/userReducer'
+import { userLogin } from '../reducers/loginReducer'
 import { useDispatch } from 'react-redux'
 import {
   TextField,

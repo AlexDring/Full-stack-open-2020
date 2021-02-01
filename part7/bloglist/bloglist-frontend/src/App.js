@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Switch, Route, Link } from 'react-router-dom'
 
@@ -6,26 +6,28 @@ import Home from './components/Home'
 import Users from './components/Users'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
-// import Logout from './components/Logout'
 import User from './components/User'
 import  Blog from './components/Blog'
 
 import { initBlogs } from './reducers/blogReducer'
-import { loadUser, userLogout } from './reducers/userReducer'
-import userService from './services/users'
+import { initUsers } from './reducers/usersReducer'
+import { loadUser, userLogout } from './reducers/loginReducer'
 import { Container, AppBar, Toolbar, IconButton, Button, makeStyles } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
+  loginDetails: {
+    marginLeft: 'auto'
+  },
   homeContent: {
     padding: theme.spacing(8, 0, 6)
   }
 }))
 
 const App = () => {
-  const [users, setUsers] = useState()
   const dispatch = useDispatch()
-  const loggedIn = useSelector(state => state.user)
+  const loggedIn = useSelector(state => state.loggedIn)
   const blogs = useSelector(state => state.blogs)
+  const users = useSelector(state => state.users)
   const classes = useStyles()
 
   useEffect(() => {
@@ -33,11 +35,7 @@ const App = () => {
   }, [dispatch])
 
   useEffect(() => {
-    userService.getAll().then(users =>
-      setUsers(users))
-  }, [])
-
-  useEffect(() => {
+    dispatch(initUsers())
     const loggedInUser = localStorage.getItem('loggedInUser')
     if(loggedInUser) {
       const parsed = JSON.parse(loggedInUser)
@@ -49,10 +47,6 @@ const App = () => {
     e.preventDefault()
     window.localStorage.removeItem('loggedInUser')
     dispatch(userLogout())
-  }
-
-  const loginDetails = {
-    marginLeft: 'auto'
   }
 
   if (loggedIn === null) {
@@ -77,14 +71,13 @@ const App = () => {
           <Button color="inherit" component={Link} to="/users">
             users
           </Button>
-          <em style={loginDetails}>{loggedIn.name} logged in <Button color="inherit"  type='submit' onClick={handleLogout}>logout</Button></em>
+          <em className={classes.loginDetails}>{loggedIn.name} logged in <Button color="inherit"  type='submit' onClick={handleLogout}>logout</Button></em>
         </Toolbar>
       </AppBar>
       <main>
         <div className={classes.homeContent}>
           <Container>
             <Notification />
-            {/* <Logout name={loggedIn.name} /> */}
             <Switch>
               <Route path='/users/:id'>
                 <User users={users} />

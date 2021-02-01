@@ -1,10 +1,7 @@
 import blogService from '../services/blogs'
 import { setNotification } from '../reducers/notificationReducer'
-// const byLikes = (a1, a2) => a2.likes - a1.likes
 
 const blogReducer = (state = [], action) => {
-  // console.log('state now: ', state)
-  // console.log('action', action)
   switch(action.type) {
   case 'INIT_BLOGS': {
     return action.payload
@@ -21,7 +18,6 @@ const blogReducer = (state = [], action) => {
     return state.filter(blog => blog.id !== action.data)
   }
   case 'NEW_COMMENT': {
-    console.log(action.payload)
     return state.map(blog => {
       if (blog.id !== action.payload.blogId) {
         return blog

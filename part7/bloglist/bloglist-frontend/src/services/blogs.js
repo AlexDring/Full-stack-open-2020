@@ -14,13 +14,6 @@ const getAll = async () => {
 }
 
 const create = async blogObject => {
-  // debugger
-  // console.log(baseUrl)
-  // console.log('blogObject', blogObject)
-  // console.log('Token', token)
-
-  // console.log('config', config);
-
   const response = await axios.post(baseUrl, blogObject, getConfig())
   return response.data
 }

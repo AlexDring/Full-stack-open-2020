@@ -1,8 +1,8 @@
 import loginService from '../services/login'
 // import blogService from '../services/blogs'
-import { setNotification } from '../reducers/notificationReducer'
+import { setNotification } from './notificationReducer'
 
-const userReducer = (state = null, action) => {
+const loginReducer = (state = null, action) => {
   switch(action.type) {
   case 'LOGIN': {
     return action.payload
@@ -47,4 +47,4 @@ export const loadUser = (user) => {
   }
 }
 
-export default userReducer
+export default loginReducer

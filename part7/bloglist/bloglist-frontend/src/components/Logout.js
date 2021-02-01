@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import { userLogout } from '../reducers/userReducer'
+import { userLogout } from '../reducers/loginReducer'
 
 const Logout = (props) => {
   const dispatch = useDispatch()

@@ -1,5 +1,6 @@
 const { ApolloServer, gql, UserInputError, AuthenticationError, PubSub } = require('apollo-server')
 const mongoose = require('mongoose')
+require('dotenv').config()
 const Book = require('./models/book')
 const Author = require('./models/author')
 const User = require('./models/user')
@@ -10,7 +11,7 @@ mongoose.set('debug', true)
 
 const JWT_SECRET = 'NEED_HERE_A_SECRET_KEY'
 
-const MONGODB_URI = 'mongodb+srv://Admin:mOTERYtompoS@cluster0.rt3fc.mongodb.net/library-graphql?retryWrites=true&w=majority'
+const MONGODB_URI = process.env.MONGODB_URI
 
 console.log('connecting to', MONGODB_URI)
 
@@ -77,10 +78,15 @@ type Mutation {
   }
 `
 const resolvers = {
+  // Author: {
+  //   bookCount: async (root) => {
+  //     const bookCount = await Book.countDocuments({ author: { $in: root.id } }) // Look into this tomorrow!!!!
+  //     return bookCount
+  //   }
+  // },
   Author: {
-    bookCount: async (root) => {
-      const bookCount = await Book.countDocuments({ author: { $in: root.id } }) // Look into this tomorrow!!!!
-      return bookCount
+    bookCount: (root) => {
+      return root.bookCount.length
     }
   },
   // Book: { // This didn't work as it was looking for book.name, book.born See if I can investigate/log this.
@@ -98,6 +104,10 @@ const resolvers = {
     // bookCount: () => books.length,
     // authorCount: () => authors.length,
     allBooks: (root, args) => {
+      if(args.genre) {
+        return Book.find({ genres: { $in: args.genre } }).populate('author')
+      }
+
       return Book.find({}).populate('author')
 
       // let filteredBooks = books
@@ -110,7 +120,7 @@ const resolvers = {
       // return filteredBooks
     },
     allAuthors: async () => {
-      return Author.find({})
+      return Author.find({}).populate('bookCount')
 
       // const allAuthors = []
       // authors.forEach(author => {
@@ -130,28 +140,26 @@ const resolvers = {
         throw new AuthenticationError("Please login to add a new book.")
       }
 
-      const bookExists = await Book.findOne({ title: args.title })
-      if(bookExists) {
-        throw new UserInputError('Book title already exists', { // and throws a UserInputError (see error below)
-          invalidArgs: args.name,
-        })
-      }
-      
-      let authorExists = await Author.findOne({ name: args.author })
-      if(!authorExists) {
-        const author = new Author({ name: args.author })
-        authorExists = await author.save()
+      // Find author
+      let author = await Author.findOne({ name: args.author })
+      // If no author, set let author to it above
+      if(!author) {
+        author = new Author({ name: args.author })
       }
 
-      const book = new Book({ ...args, author: authorExists })
+      // Create new book
+      const book = new Book({ ...args, author: author })
+      // push book id into author for book count
+      author.bookCount.push(book._id)
       try {
         await book.save()
+        await author.save()
       } catch(error) {
         throw new UserInputError(error.message, {
           invalidArgs: args,
         })
       }
-      console.log('book', book)
+
       pubsub.publish('BOOK_ADDED', { bookAdded: book })
       return book
 
